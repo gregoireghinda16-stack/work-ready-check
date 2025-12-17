@@ -8,52 +8,50 @@
 
 @layer base {
   :root {
-    /* Siemens Corporate Colors */
-    --background: 220 20% 97%;
-    --foreground: 220 60% 8%;
+    /* Siemens Corporate Colors - White as main background */
+    --background: 0 0% 100%;
+    --foreground: 225 60% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 60% 8%;
+    --card-foreground: 225 60% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 60% 8%;
+    --popover-foreground: 225 60% 8%;
 
-    /* Siemens Dark Blue */
-    --primary: 220 60% 15%;
+    /* Siemens Dark Navy Blue */
+    --primary: 225 60% 8%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 30% 92%;
-    --secondary-foreground: 220 60% 15%;
+    --secondary: 225 30% 95%;
+    --secondary-foreground: 225 60% 8%;
 
-    --muted: 220 20% 94%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 225 20% 94%;
+    --muted-foreground: 225 10% 45%;
 
-    /* Siemens Accent */
-    --accent: 220 40% 88%;
-    --accent-foreground: 220 60% 15%;
+    /* Siemens Teal Accent */
+    --accent: 175 100% 40%;
+    --accent-foreground: 0 0% 100%;
 
-    /* Siemens Success Green */
-    --success: 145 63% 42%;
+    /* Siemens Success - using Teal */
+    --success: 175 100% 40%;
     --success-foreground: 0 0% 100%;
 
     /* Warning/Alert */
     --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
+    --warning-foreground: 225 60% 8%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 88%;
-    --input: 220 20% 88%;
-    --ring: 220 60% 15%;
+    --border: 225 20% 88%;
+    --input: 225 20% 88%;
+    --ring: 175 100% 40%;
 
     --radius: 0.75rem;
 
     /* Siemens specific */
-    --siemens-blue: 220 60% 15%;
-    --siemens-blue-light: 220 50% 25%;
-    --siemens-green: 145 63% 42%;
-    --siemens-petrol: 180 100% 30%;
+    --siemens-navy: 225 60% 8%;
+    --siemens-teal: 175 100% 40%;
   }
 }
 
@@ -70,7 +68,7 @@
 
 @layer utilities {
   .siemens-gradient {
-    background: linear-gradient(135deg, hsl(var(--siemens-blue)) 0%, hsl(var(--siemens-blue-light)) 100%);
+    background: hsl(var(--siemens-navy));
   }
   
   .step-card {

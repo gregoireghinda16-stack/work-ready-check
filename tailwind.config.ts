@@ -59,10 +59,8 @@ export default {
           foreground: "hsl(var(--warning-foreground))",
         },
         siemens: {
-          blue: "hsl(var(--siemens-blue))",
-          "blue-light": "hsl(var(--siemens-blue-light))",
-          green: "hsl(var(--siemens-green))",
-          petrol: "hsl(var(--siemens-petrol))",
+          navy: "hsl(var(--siemens-navy))",
+          teal: "hsl(var(--siemens-teal))",
         },
       },
       borderRadius: {

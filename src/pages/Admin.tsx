@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Shield, ArrowLeft, CheckCircle2, RefreshCw } from "lucide-react";
+import { ArrowLeft, CheckCircle2, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import siemensLogo from "@/assets/siemens-logo.png";
 
 interface Submission {
   id: string;
@@ -77,9 +78,7 @@ export default function Admin() {
         <div className="w-full max-w-md">
           <div className="step-card">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-lg siemens-gradient">
-                <Shield className="w-6 h-6 text-primary-foreground" />
-              </div>
+              <img src={siemensLogo} alt="Siemens" className="h-10" />
               <div>
                 <h1 className="text-xl font-bold text-foreground">Administration</h1>
                 <p className="text-sm text-muted-foreground">Siemens MAS</p>
@@ -125,7 +124,7 @@ export default function Admin() {
         <div className="container py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Shield className="w-8 h-8" />
+              <img src={siemensLogo} alt="Siemens" className="h-8" />
               <div>
                 <h1 className="text-xl font-bold tracking-tight">Administration</h1>
                 <p className="text-xs text-primary-foreground/80">Tableau de bord MAS</p>
