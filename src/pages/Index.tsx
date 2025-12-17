@@ -1,6 +1,7 @@
 import { MASForm } from "@/components/MASForm";
-import { AlertTriangle, Shield, Settings } from "lucide-react";
+import { AlertTriangle, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
+import siemensLogo from "@/assets/siemens-logo.png";
 
 const Index = () => {
   return (
@@ -10,9 +11,9 @@ const Index = () => {
         <div className="container py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Shield className="w-8 h-8" />
+              <img src={siemensLogo} alt="Siemens" className="h-8" />
               <div>
-                <h1 className="text-xl font-bold tracking-tight">Siemens MAS</h1>
+                <h1 className="text-xl font-bold tracking-tight">MAS</h1>
                 <p className="text-xs text-primary-foreground/80">Minute d'Arrêt Sécurité</p>
               </div>
             </div>
