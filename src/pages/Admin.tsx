@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, CheckCircle2, RefreshCw } from "lucide-react";
+import { ArrowLeft, CheckCircle2, RefreshCw, Search, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import siemensLogo from "@/assets/siemens-logo.png";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 interface Submission {
   id: string;
@@ -26,6 +29,8 @@ export default function Admin() {
   const [error, setError] = useState("");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchName, setSearchName] = useState("");
+  const [filterDate, setFilterDate] = useState<Date | undefined>(undefined);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,11 +55,22 @@ export default function Admin() {
     setIsLoading(false);
   };
 
+  const filteredSubmissions = useMemo(() => {
+    return submissions.filter((s) => {
+      const matchesName = searchName === "" || 
+        s.technician_name.toLowerCase().includes(searchName.toLowerCase());
+      
+      const matchesDate = !filterDate || 
+        new Date(s.created_at).toDateString() === filterDate.toDateString();
+      
+      return matchesName && matchesDate;
+    });
+  }, [submissions, searchName, filterDate]);
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchSubmissions();
 
-      // Subscribe to realtime updates
       const channel = supabase
         .channel("mas_submissions_changes")
         .on(
@@ -78,7 +94,7 @@ export default function Admin() {
         <div className="w-full max-w-md">
           <div className="step-card">
             <div className="flex items-center gap-3 mb-6">
-              <img src={siemensLogo} alt="Siemens" className="h-10" />
+              <img src={siemensLogo} alt="Siemens" className="h-14" />
               <div>
                 <h1 className="text-xl font-bold text-foreground">Administration</h1>
                 <p className="text-sm text-muted-foreground">Siemens MAS</p>
@@ -124,7 +140,7 @@ export default function Admin() {
         <div className="container py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src={siemensLogo} alt="Siemens" className="h-8" />
+              <img src={siemensLogo} alt="Siemens" className="h-12" />
               <div>
                 <h1 className="text-xl font-bold tracking-tight">Administration</h1>
                 <p className="text-xs text-primary-foreground/80">Tableau de bord MAS</p>
@@ -174,6 +190,68 @@ export default function Admin() {
           </div>
         </div>
 
+        {/* Filters */}
+        <div className="step-card mb-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <Label htmlFor="searchName" className="text-sm mb-1 block">Rechercher par nom</Label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="searchName"
+                  placeholder="Nom du technicien..."
+                  value={searchName}
+                  onChange={(e) => setSearchName(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <div className="sm:w-64">
+              <Label className="text-sm mb-1 block">Filtrer par date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !filterDate && "text-muted-foreground"
+                    )}
+                  >
+                    <Calendar className="mr-2 h-4 w-4" />
+                    {filterDate ? format(filterDate, "dd MMM yyyy", { locale: fr }) : "Toutes les dates"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <CalendarComponent
+                    mode="single"
+                    selected={filterDate}
+                    onSelect={setFilterDate}
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            {(searchName || filterDate) && (
+              <div className="flex items-end">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => { setSearchName(""); setFilterDate(undefined); }}
+                  className="text-muted-foreground"
+                >
+                  Effacer filtres
+                </Button>
+              </div>
+            )}
+          </div>
+          {(searchName || filterDate) && (
+            <p className="text-sm text-muted-foreground mt-3">
+              {filteredSubmissions.length} résultat(s) trouvé(s)
+            </p>
+          )}
+        </div>
+
         {/* Table */}
         <div className="step-card overflow-hidden p-0">
           <div className="overflow-x-auto">
@@ -187,14 +265,14 @@ export default function Admin() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {submissions.length === 0 ? (
+                {filteredSubmissions.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                      Aucune soumission pour le moment
+                      {submissions.length === 0 ? "Aucune soumission pour le moment" : "Aucun résultat pour ces filtres"}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  submissions.map((submission) => (
+                  filteredSubmissions.map((submission) => (
                     <TableRow key={submission.id} className="hover:bg-muted/30">
                       <TableCell className="font-medium">
                         {format(new Date(submission.created_at), "dd MMM yyyy HH:mm", { locale: fr })}
