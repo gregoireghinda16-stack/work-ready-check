@@ -57,7 +57,7 @@ export function MASForm() {
 
       setIsSubmitted(true);
       toast({
-        title: "✅ MAS Validée",
+        title: "✅ MASE Validée",
         description: "Vous pouvez maintenant démarrer l'activité en toute sécurité.",
       });
     } catch (error) {
@@ -78,7 +78,7 @@ export function MASForm() {
           <div className="w-24 h-24 mx-auto bg-success/10 rounded-full flex items-center justify-center animate-pulse-success">
             <CheckCircle2 className="w-12 h-12 text-success" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground">MAS Validée avec succès</h2>
+          <h2 className="text-2xl font-bold text-foreground">MASE Validée avec succès</h2>
           <p className="text-muted-foreground">
             Vous pouvez maintenant démarrer l'activité en toute sécurité.
           </p>
@@ -99,7 +99,7 @@ export function MASForm() {
             variant="outline"
             className="mt-4"
           >
-            Nouvelle MAS
+            Nouvelle MASE
           </Button>
         </div>
       </div>
@@ -146,7 +146,7 @@ export function MASForm() {
             <Shield className={`w-5 h-5 ${isStep1Complete ? 'text-success' : 'text-primary-foreground'}`} />
           </div>
           <div>
-            <h3 className="font-semibold text-foreground">Étape 1 : Je prends la MAS</h3>
+            <h3 className="font-semibold text-foreground">Étape 1 : Je prends la MASE</h3>
             <p className="text-sm text-muted-foreground">Minute d'Arrêt Sécurité</p>
           </div>
         </div>

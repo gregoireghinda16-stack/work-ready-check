@@ -13,7 +13,7 @@ const Index = () => {
             <div className="flex items-center gap-3">
               <img src={siemensLogo} alt="Siemens" className="h-12" />
               <div>
-                <h1 className="text-xl font-bold tracking-tight">MAS</h1>
+                <h1 className="text-xl font-bold tracking-tight">MASE</h1>
                 <p className="text-xs text-primary-foreground/80">Minute d'Arrêt Sécurité</p>
               </div>
             </div>

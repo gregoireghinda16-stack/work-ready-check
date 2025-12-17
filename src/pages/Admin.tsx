@@ -97,7 +97,7 @@ export default function Admin() {
               <img src={siemensLogo} alt="Siemens" className="h-14" />
               <div>
                 <h1 className="text-xl font-bold text-foreground">Administration</h1>
-                <p className="text-sm text-muted-foreground">Siemens MAS</p>
+                <p className="text-sm text-muted-foreground">Siemens MASE</p>
               </div>
             </div>
 
@@ -143,7 +143,7 @@ export default function Admin() {
               <img src={siemensLogo} alt="Siemens" className="h-12" />
               <div>
                 <h1 className="text-xl font-bold tracking-tight">Administration</h1>
-                <p className="text-xs text-primary-foreground/80">Tableau de bord MAS</p>
+                <p className="text-xs text-primary-foreground/80">Tableau de bord MASE</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
