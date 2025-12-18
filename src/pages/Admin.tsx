@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 import { format, subDays, startOfDay } from "date-fns";
 import { fr } from "date-fns/locale";
 import siemensLogo from "@/assets/siemens-logo.png";
-import adminBackground from "@/assets/admin-background.png";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
@@ -187,19 +186,9 @@ export default function Admin() {
   }
 
   return (
-    <div 
-      className="min-h-screen relative"
-      style={{
-        backgroundImage: `url(${adminBackground})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}
-    >
-      {/* Overlay for readability */}
-      <div className="absolute inset-0 bg-background/85 backdrop-blur-sm" />
+    <div className="min-h-screen bg-secondary/30">
       {/* Header */}
-      <header className="bg-primary shadow-lg relative z-10">
+      <header className="bg-primary shadow-lg">
         <div className="container py-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
@@ -233,7 +222,7 @@ export default function Admin() {
         </div>
       </header>
 
-      <div className="container py-6 space-y-6 relative z-10">
+      <div className="container py-6 space-y-6">
         {/* Stats Cards */}
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="bg-card rounded-xl border border-border shadow-sm p-5 transition-all hover:shadow-md">
