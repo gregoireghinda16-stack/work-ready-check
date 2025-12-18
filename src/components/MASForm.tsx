@@ -293,11 +293,11 @@ export function MASForm() {
             "Elle est nécessaire pour vérifier que rien ne peut aller de travers."
           </p>
           
-          <div 
+          <label 
+            htmlFor="step1"
             className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer transition-all ${
               checks.step1 ? 'bg-success/5 border border-success/30' : 'bg-muted/50 border border-transparent hover:border-border'
             }`}
-            onClick={() => handleCheck("step1")}
           >
             <Checkbox
               id="step1"
@@ -305,10 +305,10 @@ export function MASForm() {
               onCheckedChange={() => handleCheck("step1")}
               className="checkbox-siemens"
             />
-            <Label htmlFor="step1" className="text-sm font-medium cursor-pointer flex-1">
+            <span className="text-sm font-medium flex-1">
               Je confirme prendre la Minute d'Arrêt Sécurité
-            </Label>
-          </div>
+            </span>
+          </label>
         </div>
       </div>
 
@@ -343,12 +343,12 @@ export function MASForm() {
             { key: 'step2_2' as keyof StepData, text: "J'ai les EPI's, habilitations/compétences et moyens matériels prévus." },
             { key: 'step2_3' as keyof StepData, text: "J'identifie les nouvelles interférences (énergies, environnement, interface avec d'autres travaux, météo...)." },
           ].map((item) => (
-            <div 
+            <label 
               key={item.key}
+              htmlFor={item.key}
               className={`flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all ${
                 checks[item.key] ? 'bg-success/5 border border-success/30' : 'bg-muted/50 border border-transparent hover:border-border'
               }`}
-              onClick={() => handleCheck(item.key)}
             >
               <Checkbox
                 id={item.key}
@@ -356,10 +356,10 @@ export function MASForm() {
                 onCheckedChange={() => handleCheck(item.key)}
                 className="checkbox-siemens mt-0.5"
               />
-              <Label htmlFor={item.key} className="text-sm cursor-pointer leading-relaxed flex-1">
+              <span className="text-sm leading-relaxed flex-1">
                 {item.text}
-              </Label>
-            </div>
+              </span>
+            </label>
           ))}
         </div>
       </div>
@@ -394,12 +394,12 @@ export function MASForm() {
             { key: 'step3_1' as keyof StepData, text: "Je supprime ou atténue les nouveaux risques identifiés." },
             { key: 'step3_2' as keyof StepData, text: "Je respecte les standards et modes opératoires." },
           ].map((item) => (
-            <div 
+            <label 
               key={item.key}
+              htmlFor={item.key}
               className={`flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all ${
                 checks[item.key] ? 'bg-success/5 border border-success/30' : 'bg-muted/50 border border-transparent hover:border-border'
               }`}
-              onClick={() => handleCheck(item.key)}
             >
               <Checkbox
                 id={item.key}
@@ -407,10 +407,10 @@ export function MASForm() {
                 onCheckedChange={() => handleCheck(item.key)}
                 className="checkbox-siemens mt-0.5"
               />
-              <Label htmlFor={item.key} className="text-sm cursor-pointer leading-relaxed flex-1">
+              <span className="text-sm leading-relaxed flex-1">
                 {item.text}
-              </Label>
-            </div>
+              </span>
+            </label>
           ))}
         </div>
       </div>
