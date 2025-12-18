@@ -3,26 +3,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle2, AlertTriangle, Shield, Brain, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
-const TECHNICIANS = [
-  "SIMON ANCEL",
-  "Karim Brahami",
-  "Cyril Coste",
-  "OLIVIER HOGUETHead",
-  "Laurent Juillard",
-  "CLEMENT LUCAS",
-  "Regis Lozinguez",
-  "Bertrand Martinet",
-  "Frederic Mira",
-  "Franck Tirabassi",
-  "CHRISTIAN UTARD",
-  "Externes(1)",
-  "Alain Diot",
-];
 
 interface StepData {
   step1: boolean;
@@ -131,18 +114,13 @@ export function MASForm() {
         <div className="space-y-4">
           <div>
             <Label htmlFor="name">Nom du Technicien</Label>
-            <Select value={technicianName} onValueChange={setTechnicianName}>
-              <SelectTrigger className="mt-1">
-                <SelectValue placeholder="Sélectionnez votre nom" />
-              </SelectTrigger>
-              <SelectContent>
-                {TECHNICIANS.map((name) => (
-                  <SelectItem key={name} value={name}>
-                    {name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Input
+              id="name"
+              placeholder="Votre nom complet"
+              value={technicianName}
+              onChange={(e) => setTechnicianName(e.target.value)}
+              className="mt-1"
+            />
           </div>
           <div>
             <Label htmlFor="email">Email Siemens</Label>
