@@ -47,6 +47,7 @@ export function MASForm() {
   const { toast } = useToast();
   const [technicianName, setTechnicianName] = useState("");
   const [siemensEmail, setSiemensEmail] = useState("");
+  const [worksiteInfo, setWorksiteInfo] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   
@@ -78,6 +79,7 @@ export function MASForm() {
         .insert({
           technician_name: technicianName,
           siemens_email: siemensEmail,
+          worksite_info: worksiteInfo || null,
         });
 
       if (error) throw error;
@@ -122,6 +124,7 @@ export function MASForm() {
               });
               setTechnicianName("");
               setSiemensEmail("");
+              setWorksiteInfo("");
             }}
             variant="outline"
             className="mt-4"
@@ -172,6 +175,16 @@ export function MASForm() {
               value={siemensEmail}
               readOnly
               className="mt-1 bg-muted"
+            />
+          </div>
+          <div>
+            <Label htmlFor="worksite">Chantier / Entreprise (optionnel)</Label>
+            <textarea
+              id="worksite"
+              placeholder="Ex: Chantier XYZ, Entreprise ABC..."
+              value={worksiteInfo}
+              onChange={(e) => setWorksiteInfo(e.target.value)}
+              className="mt-1 w-full min-h-[80px] px-3 py-2 text-sm rounded-md border border-input bg-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
         </div>

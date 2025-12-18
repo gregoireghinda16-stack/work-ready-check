@@ -21,6 +21,7 @@ export type Database = {
           siemens_email: string
           status: string
           technician_name: string
+          worksite_info: string | null
         }
         Insert: {
           created_at?: string
@@ -28,6 +29,7 @@ export type Database = {
           siemens_email: string
           status?: string
           technician_name: string
+          worksite_info?: string | null
         }
         Update: {
           created_at?: string
@@ -35,6 +37,7 @@ export type Database = {
           siemens_email?: string
           status?: string
           technician_name?: string
+          worksite_info?: string | null
         }
         Relationships: []
       }
