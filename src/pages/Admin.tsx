@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, CheckCircle2, RefreshCw, Search, Calendar } from "lucide-react";
+import { ArrowLeft, CheckCircle2, RefreshCw, Search, Calendar, Users, ClipboardCheck, Shield, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -68,6 +68,10 @@ export default function Admin() {
     });
   }, [submissions, searchName, filterDate]);
 
+  const todayCount = useMemo(() => {
+    return submissions.filter((s) => new Date(s.created_at).toDateString() === new Date().toDateString()).length;
+  }, [submissions]);
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchSubmissions();
@@ -91,43 +95,55 @@ export default function Admin() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="step-card">
-            <div className="flex items-center gap-3 mb-6">
-              <img src={siemensLogo} alt="Siemens" className="h-14" />
-              <div>
-                <h1 className="text-xl font-bold text-foreground">Administration</h1>
-                <p className="text-sm text-muted-foreground">Siemens MASE</p>
+      <div className="min-h-screen bg-gradient-to-br from-primary via-primary to-accent/20 flex items-center justify-center p-4">
+        <div className="w-full max-w-md animate-slide-up">
+          <div className="bg-card rounded-2xl shadow-2xl border border-border/50 overflow-hidden">
+            {/* Login Header */}
+            <div className="bg-primary p-6 text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-foreground/10 rounded-full mb-4">
+                <Lock className="w-8 h-8 text-primary-foreground" />
               </div>
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <img src={siemensLogo} alt="Siemens" className="h-10" />
+              </div>
+              <h1 className="text-xl font-bold text-primary-foreground">Administration MASE</h1>
+              <p className="text-sm text-primary-foreground/70 mt-1">Accès sécurisé au tableau de bord</p>
             </div>
 
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <Label htmlFor="password">Mot de passe</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Entrez le mot de passe"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1"
-                />
-                {error && <p className="text-sm text-destructive mt-1">{error}</p>}
-              </div>
+            {/* Login Form */}
+            <div className="p-6">
+              <form onSubmit={handleLogin} className="space-y-5">
+                <div>
+                  <Label htmlFor="password" className="text-sm font-medium">Mot de passe</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="mt-2 h-12 text-base"
+                  />
+                  {error && (
+                    <p className="text-sm text-destructive mt-2 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-destructive rounded-full" />
+                      {error}
+                    </p>
+                  )}
+                </div>
 
-              <Button type="submit" className="w-full siemens-gradient text-primary-foreground">
-                Accéder au tableau de bord
-              </Button>
-            </form>
+                <Button type="submit" className="w-full h-12 text-base font-semibold bg-accent hover:bg-accent/90 text-accent-foreground">
+                  Accéder au tableau de bord
+                </Button>
+              </form>
 
-            <Link
-              to="/"
-              className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Retour au formulaire
-            </Link>
+              <Link
+                to="/"
+                className="flex items-center justify-center gap-2 mt-5 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Retour au formulaire
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -135,16 +151,18 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-secondary/30">
       {/* Header */}
-      <header className="siemens-gradient text-primary-foreground">
+      <header className="bg-primary shadow-lg">
         <div className="container py-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <img src={siemensLogo} alt="Siemens" className="h-10 sm:h-12" />
+            <div className="flex items-center gap-4">
+              <div className="p-2 bg-primary-foreground/10 rounded-xl">
+                <img src={siemensLogo} alt="Siemens" className="h-8 sm:h-10" />
+              </div>
               <div>
-                <h1 className="text-lg sm:text-xl font-bold tracking-tight">Administration</h1>
-                <p className="text-xs text-primary-foreground/80">Tableau de bord MASE</p>
+                <h1 className="text-lg sm:text-xl font-bold tracking-tight text-primary-foreground">Tableau de bord</h1>
+                <p className="text-xs text-primary-foreground/70">Administration MASE</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -153,15 +171,15 @@ export default function Admin() {
                 size="sm"
                 onClick={fetchSubmissions}
                 disabled={isLoading}
-                className="text-primary-foreground hover:bg-primary-foreground/10"
+                className="text-primary-foreground hover:bg-primary-foreground/10 border border-primary-foreground/20"
               >
-                <RefreshCw className={`w-4 h-4 mr-1 sm:mr-2 ${isLoading ? "animate-spin" : ""}`} />
-                <span className="hidden xs:inline">Actualiser</span>
+                <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+                Actualiser
               </Button>
               <Link to="/">
-                <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-primary-foreground/10">
-                  <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
-                  <span className="hidden xs:inline">Formulaire</span>
+                <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-primary-foreground/10 border border-primary-foreground/20">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Formulaire
                 </Button>
               </Link>
             </div>
@@ -169,33 +187,57 @@ export default function Admin() {
         </div>
       </header>
 
-      {/* Stats */}
-      <div className="container py-6">
-        <div className="grid gap-4 md:grid-cols-3 mb-6">
-          <div className="step-card">
-            <p className="text-sm text-muted-foreground">Total soumissions</p>
-            <p className="text-3xl font-bold text-foreground">{submissions.length}</p>
+      <div className="container py-6 space-y-6">
+        {/* Stats Cards */}
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div className="bg-card rounded-xl border border-border shadow-sm p-5 transition-all hover:shadow-md">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total soumissions</p>
+                <p className="text-4xl font-bold text-foreground mt-2">{submissions.length}</p>
+              </div>
+              <div className="p-3 bg-primary/10 rounded-xl">
+                <ClipboardCheck className="w-6 h-6 text-primary" />
+              </div>
+            </div>
           </div>
-          <div className="step-card">
-            <p className="text-sm text-muted-foreground">Aujourd'hui</p>
-            <p className="text-3xl font-bold text-foreground">
-              {submissions.filter((s) => new Date(s.created_at).toDateString() === new Date().toDateString()).length}
-            </p>
+
+          <div className="bg-card rounded-xl border border-border shadow-sm p-5 transition-all hover:shadow-md">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Aujourd'hui</p>
+                <p className="text-4xl font-bold text-accent mt-2">{todayCount}</p>
+              </div>
+              <div className="p-3 bg-accent/10 rounded-xl">
+                <Users className="w-6 h-6 text-accent" />
+              </div>
+            </div>
           </div>
-          <div className="step-card">
-            <p className="text-sm text-muted-foreground">Statut</p>
-            <div className="flex items-center gap-2 mt-1">
-              <CheckCircle2 className="w-6 h-6 text-success" />
-              <span className="text-xl font-semibold text-success">Toutes validées</span>
+
+          <div className="bg-card rounded-xl border border-border shadow-sm p-5 transition-all hover:shadow-md">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Statut système</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-success"></span>
+                  </span>
+                  <span className="text-lg font-semibold text-success">Opérationnel</span>
+                </div>
+              </div>
+              <div className="p-3 bg-success/10 rounded-xl">
+                <Shield className="w-6 h-6 text-success" />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="step-card mb-6">
+        <div className="bg-card rounded-xl border border-border shadow-sm p-5">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
-              <Label htmlFor="searchName" className="text-sm mb-1 block">Rechercher par nom</Label>
+              <Label htmlFor="searchName" className="text-sm font-medium mb-2 block">Rechercher par nom</Label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
@@ -203,18 +245,18 @@ export default function Admin() {
                   placeholder="Nom du technicien..."
                   value={searchName}
                   onChange={(e) => setSearchName(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 h-11"
                 />
               </div>
             </div>
             <div className="sm:w-64">
-              <Label className="text-sm mb-1 block">Filtrer par date</Label>
+              <Label className="text-sm font-medium mb-2 block">Filtrer par date</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full justify-start text-left font-normal",
+                      "w-full h-11 justify-start text-left font-normal",
                       !filterDate && "text-muted-foreground"
                     )}
                   >
@@ -222,7 +264,7 @@ export default function Admin() {
                     {filterDate ? format(filterDate, "dd MMM yyyy", { locale: fr }) : "Toutes les dates"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent className="w-auto p-0 bg-card" align="start">
                   <CalendarComponent
                     mode="single"
                     selected={filterDate}
@@ -236,10 +278,10 @@ export default function Admin() {
             {(searchName || filterDate) && (
               <div className="flex items-end">
                 <Button 
-                  variant="ghost" 
+                  variant="outline" 
                   size="sm"
                   onClick={() => { setSearchName(""); setFilterDate(undefined); }}
-                  className="text-muted-foreground"
+                  className="h-11 px-4"
                 >
                   Effacer filtres
                 </Button>
@@ -247,46 +289,66 @@ export default function Admin() {
             )}
           </div>
           {(searchName || filterDate) && (
-            <p className="text-sm text-muted-foreground mt-3">
-              {filteredSubmissions.length} résultat(s) trouvé(s)
-            </p>
+            <div className="mt-4 pt-4 border-t border-border">
+              <p className="text-sm text-muted-foreground">
+                <span className="font-semibold text-foreground">{filteredSubmissions.length}</span> résultat(s) trouvé(s)
+              </p>
+            </div>
           )}
         </div>
 
         {/* Table */}
-        <div className="step-card overflow-hidden p-0">
+        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="font-semibold">Date/Heure</TableHead>
-                  <TableHead className="font-semibold">Nom du Technicien</TableHead>
-                  <TableHead className="font-semibold">Chantier</TableHead>
-                  <TableHead className="font-semibold">Email Siemens</TableHead>
-                  <TableHead className="font-semibold text-center">Statut</TableHead>
+                <TableRow className="bg-muted/50 hover:bg-muted/50">
+                  <TableHead className="font-semibold text-foreground py-4">Date/Heure</TableHead>
+                  <TableHead className="font-semibold text-foreground py-4">Technicien</TableHead>
+                  <TableHead className="font-semibold text-foreground py-4">Chantier</TableHead>
+                  <TableHead className="font-semibold text-foreground py-4">Email</TableHead>
+                  <TableHead className="font-semibold text-foreground py-4 text-center">Statut</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredSubmissions.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                      {submissions.length === 0 ? "Aucune soumission pour le moment" : "Aucun résultat pour ces filtres"}
+                    <TableCell colSpan={5} className="text-center py-12">
+                      <div className="flex flex-col items-center gap-2">
+                        <ClipboardCheck className="w-10 h-10 text-muted-foreground/50" />
+                        <p className="text-muted-foreground">
+                          {submissions.length === 0 ? "Aucune soumission pour le moment" : "Aucun résultat pour ces filtres"}
+                        </p>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredSubmissions.map((submission) => (
-                    <TableRow key={submission.id} className="hover:bg-muted/30">
-                      <TableCell className="font-medium">
-                        {format(new Date(submission.created_at), "dd MMM yyyy HH:mm", { locale: fr })}
+                  filteredSubmissions.map((submission, index) => (
+                    <TableRow 
+                      key={submission.id} 
+                      className="hover:bg-muted/30 transition-colors"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <TableCell className="font-medium py-4">
+                        <div className="flex flex-col">
+                          <span>{format(new Date(submission.created_at), "dd MMM yyyy", { locale: fr })}</span>
+                          <span className="text-xs text-muted-foreground">{format(new Date(submission.created_at), "HH:mm", { locale: fr })}</span>
+                        </div>
                       </TableCell>
-                      <TableCell>{submission.technician_name}</TableCell>
-                      <TableCell className="text-muted-foreground max-w-[200px] truncate">
-                        {submission.worksite_info || "-"}
+                      <TableCell className="py-4">
+                        <span className="font-medium">{submission.technician_name}</span>
                       </TableCell>
-                      <TableCell className="text-muted-foreground">{submission.siemens_email}</TableCell>
-                      <TableCell className="text-center">
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-success/10 text-success">
-                          <CheckCircle2 className="w-3 h-3" />
+                      <TableCell className="py-4 max-w-[200px]">
+                        <span className="text-muted-foreground truncate block">
+                          {submission.worksite_info || "—"}
+                        </span>
+                      </TableCell>
+                      <TableCell className="py-4">
+                        <span className="text-muted-foreground text-sm">{submission.siemens_email}</span>
+                      </TableCell>
+                      <TableCell className="py-4 text-center">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-success/10 text-success border border-success/20">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
                           {submission.status}
                         </span>
                       </TableCell>
