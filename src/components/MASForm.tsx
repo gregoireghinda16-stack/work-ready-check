@@ -6,6 +6,13 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, AlertTriangle, Shield, Brain, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface StepData {
   step1: boolean;
@@ -15,6 +22,26 @@ interface StepData {
   step3_1: boolean;
   step3_2: boolean;
 }
+
+interface Technician {
+  name: string;
+  email: string;
+}
+
+const TECHNICIANS: Technician[] = [
+  { name: "SIMON ANCEL", email: "simon.ancel@siemens.com" },
+  { name: "Karim Brahami", email: "karim.brahami@siemens.com" },
+  { name: "Cyril Coste", email: "cyril.coste@siemens.com" },
+  { name: "OLIVIER HOGUET", email: "olivier.hoguet@siemens.com" },
+  { name: "Laurent Juillard", email: "laurent.juillard@siemens.com" },
+  { name: "CLEMENT LUCAS", email: "clement.lucas@siemens.com" },
+  { name: "Regis Lozinguez", email: "regis.lozinguez@siemens.com" },
+  { name: "Bertrand Martinet", email: "bertrand.martinet@siemens.com" },
+  { name: "Frederic Mira", email: "frederic.mira@siemens.com" },
+  { name: "Franck Tirabassi", email: "franck.tirabassi@siemens.com" },
+  { name: "CHRISTIAN UTARD", email: "christian.utard@siemens.com" },
+  { name: "Alain Diot", email: "alain.diot.ext@siemens.com" },
+];
 
 export function MASForm() {
   const { toast } = useToast();
@@ -114,13 +141,27 @@ export function MASForm() {
         <div className="space-y-4">
           <div>
             <Label htmlFor="name">Nom du Technicien</Label>
-            <Input
-              id="name"
-              placeholder="Votre nom complet"
+            <Select
               value={technicianName}
-              onChange={(e) => setTechnicianName(e.target.value)}
-              className="mt-1"
-            />
+              onValueChange={(value) => {
+                setTechnicianName(value);
+                const tech = TECHNICIANS.find((t) => t.name === value);
+                if (tech) {
+                  setSiemensEmail(tech.email);
+                }
+              }}
+            >
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Sélectionnez un technicien" />
+              </SelectTrigger>
+              <SelectContent>
+                {TECHNICIANS.map((tech) => (
+                  <SelectItem key={tech.name} value={tech.name}>
+                    {tech.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <Label htmlFor="email">Email Siemens</Label>
@@ -129,8 +170,8 @@ export function MASForm() {
               type="email"
               placeholder="prenom.nom@siemens.com"
               value={siemensEmail}
-              onChange={(e) => setSiemensEmail(e.target.value)}
-              className="mt-1"
+              readOnly
+              className="mt-1 bg-muted"
             />
           </div>
         </div>
