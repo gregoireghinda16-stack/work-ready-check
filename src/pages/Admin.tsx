@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, CheckCircle2, RefreshCw, Search, Calendar, Users, ClipboardCheck, Shield, Lock } from "lucide-react";
+import { ArrowLeft, CheckCircle2, RefreshCw, Search, Calendar, Users, ClipboardCheck, Shield, Lock, TrendingUp, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { format } from "date-fns";
+import { format, subDays, startOfDay } from "date-fns";
 import { fr } from "date-fns/locale";
 import siemensLogo from "@/assets/siemens-logo.png";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 
 interface Submission {
   id: string;
@@ -72,6 +73,42 @@ export default function Admin() {
     return submissions.filter((s) => new Date(s.created_at).toDateString() === new Date().toDateString()).length;
   }, [submissions]);
 
+  // Chart data: submissions per day (last 14 days)
+  const dailyChartData = useMemo(() => {
+    const days = 14;
+    const data = [];
+    
+    for (let i = days - 1; i >= 0; i--) {
+      const date = startOfDay(subDays(new Date(), i));
+      const count = submissions.filter(s => 
+        startOfDay(new Date(s.created_at)).getTime() === date.getTime()
+      ).length;
+      
+      data.push({
+        date: format(date, "dd/MM", { locale: fr }),
+        fullDate: format(date, "dd MMM", { locale: fr }),
+        count
+      });
+    }
+    
+    return data;
+  }, [submissions]);
+
+  // Chart data: submissions per technician
+  const technicianChartData = useMemo(() => {
+    const counts: Record<string, number> = {};
+    
+    submissions.forEach(s => {
+      const name = s.technician_name.split(' ').slice(0, 2).join(' ');
+      counts[name] = (counts[name] || 0) + 1;
+    });
+    
+    return Object.entries(counts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+  }, [submissions]);
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchSubmissions();
@@ -98,7 +135,6 @@ export default function Admin() {
       <div className="min-h-screen bg-gradient-to-br from-primary via-primary to-accent/20 flex items-center justify-center p-4">
         <div className="w-full max-w-md animate-slide-up">
           <div className="bg-card rounded-2xl shadow-2xl border border-border/50 overflow-hidden">
-            {/* Login Header */}
             <div className="bg-primary p-6 text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-foreground/10 rounded-full mb-4">
                 <Lock className="w-8 h-8 text-primary-foreground" />
@@ -110,7 +146,6 @@ export default function Admin() {
               <p className="text-sm text-primary-foreground/70 mt-1">Accès sécurisé au tableau de bord</p>
             </div>
 
-            {/* Login Form */}
             <div className="p-6">
               <form onSubmit={handleLogin} className="space-y-5">
                 <div>
@@ -229,6 +264,124 @@ export default function Admin() {
               <div className="p-3 bg-success/10 rounded-xl">
                 <Shield className="w-6 h-6 text-success" />
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Charts */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Daily Evolution Chart */}
+          <div className="bg-card rounded-xl border border-border shadow-sm p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="p-2 bg-accent/10 rounded-lg">
+                <TrendingUp className="w-5 h-5 text-accent" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">Évolution journalière</h3>
+                <p className="text-xs text-muted-foreground">14 derniers jours</p>
+              </div>
+            </div>
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={dailyChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(175, 100%, 40%)" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="hsl(175, 100%, 40%)" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(225, 20%, 88%)" vertical={false} />
+                  <XAxis 
+                    dataKey="date" 
+                    tick={{ fontSize: 11, fill: 'hsl(225, 10%, 45%)' }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis 
+                    tick={{ fontSize: 11, fill: 'hsl(225, 10%, 45%)' }}
+                    axisLine={false}
+                    tickLine={false}
+                    allowDecimals={false}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(0, 0%, 100%)', 
+                      border: '1px solid hsl(225, 20%, 88%)',
+                      borderRadius: '8px',
+                      fontSize: '12px'
+                    }}
+                    formatter={(value: number) => [value, 'Soumissions']}
+                    labelFormatter={(label) => `Date: ${label}`}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="count" 
+                    stroke="hsl(175, 100%, 40%)" 
+                    strokeWidth={2}
+                    fillOpacity={1} 
+                    fill="url(#colorCount)" 
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Technician Chart */}
+          <div className="bg-card rounded-xl border border-border shadow-sm p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <BarChart3 className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">Soumissions par technicien</h3>
+                <p className="text-xs text-muted-foreground">Top 10</p>
+              </div>
+            </div>
+            <div className="h-[250px]">
+              {technicianChartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={technicianChartData} layout="vertical" margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(225, 20%, 88%)" horizontal={true} vertical={false} />
+                    <XAxis 
+                      type="number" 
+                      tick={{ fontSize: 11, fill: 'hsl(225, 10%, 45%)' }}
+                      axisLine={false}
+                      tickLine={false}
+                      allowDecimals={false}
+                    />
+                    <YAxis 
+                      type="category" 
+                      dataKey="name" 
+                      tick={{ fontSize: 10, fill: 'hsl(225, 10%, 45%)' }}
+                      axisLine={false}
+                      tickLine={false}
+                      width={100}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(0, 0%, 100%)', 
+                        border: '1px solid hsl(225, 20%, 88%)',
+                        borderRadius: '8px',
+                        fontSize: '12px'
+                      }}
+                      formatter={(value: number) => [value, 'Soumissions']}
+                    />
+                    <Bar dataKey="count" radius={[0, 4, 4, 0]}>
+                      {technicianChartData.map((_, index) => (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={index === 0 ? 'hsl(175, 100%, 40%)' : 'hsl(225, 60%, 8%)'}
+                          fillOpacity={1 - (index * 0.08)}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
+                  Aucune donnée disponible
+                </div>
+              )}
             </div>
           </div>
         </div>
