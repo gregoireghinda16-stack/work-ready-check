@@ -19,6 +19,7 @@ interface Submission {
   technician_name: string;
   siemens_email: string;
   status: string;
+  worksite_info: string | null;
 }
 
 const ADMIN_PASSWORD = "siemens2024";
@@ -260,6 +261,7 @@ export default function Admin() {
                 <TableRow className="bg-muted/50">
                   <TableHead className="font-semibold">Date/Heure</TableHead>
                   <TableHead className="font-semibold">Nom du Technicien</TableHead>
+                  <TableHead className="font-semibold">Chantier</TableHead>
                   <TableHead className="font-semibold">Email Siemens</TableHead>
                   <TableHead className="font-semibold text-center">Statut</TableHead>
                 </TableRow>
@@ -267,7 +269,7 @@ export default function Admin() {
               <TableBody>
                 {filteredSubmissions.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                       {submissions.length === 0 ? "Aucune soumission pour le moment" : "Aucun résultat pour ces filtres"}
                     </TableCell>
                   </TableRow>
@@ -278,6 +280,9 @@ export default function Admin() {
                         {format(new Date(submission.created_at), "dd MMM yyyy HH:mm", { locale: fr })}
                       </TableCell>
                       <TableCell>{submission.technician_name}</TableCell>
+                      <TableCell className="text-muted-foreground max-w-[200px] truncate">
+                        {submission.worksite_info || "-"}
+                      </TableCell>
                       <TableCell className="text-muted-foreground">{submission.siemens_email}</TableCell>
                       <TableCell className="text-center">
                         <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-success/10 text-success">
