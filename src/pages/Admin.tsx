@@ -138,11 +138,11 @@ export default function Admin() {
       {/* Header */}
       <header className="siemens-gradient text-primary-foreground">
         <div className="container py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <img src={siemensLogo} alt="Siemens" className="h-12" />
+              <img src={siemensLogo} alt="Siemens" className="h-10 sm:h-12" />
               <div>
-                <h1 className="text-xl font-bold tracking-tight">Administration</h1>
+                <h1 className="text-lg sm:text-xl font-bold tracking-tight">Administration</h1>
                 <p className="text-xs text-primary-foreground/80">Tableau de bord MASE</p>
               </div>
             </div>
@@ -154,13 +154,13 @@ export default function Admin() {
                 disabled={isLoading}
                 className="text-primary-foreground hover:bg-primary-foreground/10"
               >
-                <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-                Actualiser
+                <RefreshCw className={`w-4 h-4 mr-1 sm:mr-2 ${isLoading ? "animate-spin" : ""}`} />
+                <span className="hidden xs:inline">Actualiser</span>
               </Button>
               <Link to="/">
                 <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-primary-foreground/10">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Formulaire
+                  <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
+                  <span className="hidden xs:inline">Formulaire</span>
                 </Button>
               </Link>
             </div>
